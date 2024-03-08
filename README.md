@@ -37,7 +37,7 @@ import { db } from "./databases";
 export class Book extends AbstractModel {
   tableName: string = "Book";
   db = testDb;
-  name = new fields.Character({ maxLength: 200 });
+  title = new fields.Character({ maxLength: 200 });
 
   static get objects() {
     return new Manager(Book);
@@ -64,12 +64,31 @@ oswald-cli migrate .
 
 ```typescript
 import { Book } from "./models";
+
+const books = await Book.objects.list(); // List all books
+const harryPotterBooks = await Book.objects
+  .filter({ title__icontains: "Harry Potter" })
+  .list(); // List all books that contains Harry Potter in the title
+await Book.objects.filter({ title__icontains: "FNAF" }).delete(); // Deletes all books within a filter
+const myNewBook = await Book.objects.create({
+  title: "My New Book",
+});
+
+console.log(myNewBook.title, myNewBook.id);
+
+myNewBook.title = "Better Title";
+myNewBook.save();
 ```
 
 ## TODO
 
+- [ ] Updating entries
 - [ ] Foreign Keys
 - [ ] Indexing
+- [ ] More Filters
+- [ ] Ordering
+- [ ] Complex Filters
+- [ ] Database Functions
 - [ ] Migration Dependency
 - [ ] PostgreSQL Driver
 - [ ] MySQL Driver
